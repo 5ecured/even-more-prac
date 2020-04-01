@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.css"],"names":[],"mappings":"AAAA,KACE,iBACF,CAEA,MACE,WAAY,CACZ,wBACF,CAEA,MACE,qBAAsB,CACtB,YACF","file":"main.48a7c636.chunk.css","sourcesContent":["body {\n  text-align: center;\n}\n\ntable {\n  margin: auto;\n  border-collapse: collapse;\n}\n\nth, td {\n  border: 1px solid grey;\n  padding: 10px;\n}"]}
