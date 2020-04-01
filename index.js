@@ -1,6 +1,8 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const cors = require('cors')
+const Player = require('./models/players')
 
 app.use(cors())
 app.use(express.json())
@@ -20,25 +22,39 @@ const generateId = () => {
 }
 
 app.get('/players', (req, res) => {
-    res.send(players)
+    Player.find({})
+        .then(data => {
+            res.send(data.map(d => d.toJSON()))
+        })
 })
 
 app.delete('/players/:id', (req, res) => {
-    const id = Number(req.params.id)
-    players = players.filter(p => p.id !== id)
-    res.status(204).end()
+    const id = req.params.id
+    Player.findByIdAndRemove(id)
+        .then(data => {
+            res.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 app.post('/players', (req, res) => {
     const body = req.body
     body.id = generateId()
     body.important = false
-    players = players.concat(body)
-    res.send(body)
+
+    const newPlayer = new Player({
+        name: body.name,
+        club: body.club,
+        important: false
+    })
+
+    newPlayer.save().then(savedPlayer => {
+        res.send(savedPlayer.toJSON())
+    })
 })
 
 app.put('/players/:id', (req, res) => {
-    const id = Number(req.params.id)
+    const id = req.params.id
     const body = req.body
     const newBody = {
         id: body.id,
@@ -46,17 +62,21 @@ app.put('/players/:id', (req, res) => {
         club: body.club,
         important: body.important
     }
-    players = players.map(p => p.id === id ? newBody : p)
-    res.send(newBody)
+    Player.findByIdAndUpdate(id, newBody, {new: true})
+        .then(data => {
+            res.send(data.toJSON())
+        })
 })
 
 app.patch('/players/:id', (req, res) => {
-    const id = Number(req.params.id)
+    const id = req.params.id
     const body = req.body
 
     const newBody = {...body, important: !body.important}
-    players = players.map(p => p.id === id ? newBody : p)
-    res.send(newBody)
+    Player.findByIdAndUpdate(id, newBody, {new: true})
+        .then(data => {
+            res.send(data.toJSON())
+        })
 })
 
 
